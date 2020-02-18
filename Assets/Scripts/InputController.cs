@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 
 public class InputController : MonoBehaviour {
   public float reboundSpeed;
+  public GameObject lost;
+  public TerrainController terrainController;
 
   bool grounded = false;
   bool dead = false;
   float gravity;
+  float sleep = 2.5f;
 
   bool WalkSanity() {
     if(GetComponent<Rigidbody2D>().gravityScale > 0) {
@@ -23,10 +27,23 @@ public class InputController : MonoBehaviour {
   }
 
   void Update() {
+    if(Camera.main.WorldToViewportPoint(transform.position).x < 0) {
+      dead = true;
+    }
+
     if(dead) {
       GetComponent<Rigidbody2D>().gravityScale = 0;
       GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+      terrainController.lost = true;
+      sleep -= Time.deltaTime;
+      if(sleep <= 0.0f) {
+        lost.SetActive(true);
+      }
       return;
+    }
+
+    if(Camera.main.WorldToViewportPoint(transform.position).y < 0 || Camera.main.WorldToViewportPoint(transform.position).y > 1) {
+      transform.Translate(0, -1.99f * transform.position.y, 0);
     }
 
     if(Input.GetKeyDown(KeyCode.Space)) {

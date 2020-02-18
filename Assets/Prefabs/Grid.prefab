@@ -58,4 +58,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   terrain:
   - {fileID: 8322507800226546055, guid: 2c6428a7fde974d67a095fdb9fe98fbc, type: 3}
-  speed: 20
+  - {fileID: 8322507800226546055, guid: bcbc10c4283e2e348a3c465844133267, type: 3}
+  - {fileID: 8322507800226546055, guid: a0f994740a31f0512a8c045fae25dcf7, type: 3}
+  - {fileID: 1895685668278560547, guid: 733182385a6d8739ba220b36903eb3cf, type: 3}
+  - {fileID: 8322507800226546055, guid: 66d2c74649deb2f32976a246402aac14, type: 3}
+  - {fileID: 1599360218049521817, guid: b02f776636daa1dbcb1ebd3c9bf86898, type: 3}
+  - {fileID: 2684000094643427127, guid: dc33d8e570c72c57391d5a10e69a74dd, type: 3}
+  - {fileID: 747252747383406429, guid: acd205aaaf0b8dd9bb7ba70c2dae7fbe, type: 3}
+  - {fileID: 215542406459942201, guid: ec20a0f979f4d0af4a712faac46979ca, type: 3}
+  - {fileID: 1721411246153705388, guid: 3e6644a62431992b6b822b1b28a47750, type: 3}
+  - {fileID: 8322507800226546055, guid: 81031d7f5cd496a66afab80565676ee4, type: 3}
+  - {fileID: 2684000094643427127, guid: 5f7e97631291287bcad710255dcfc11f, type: 3}
+  - {fileID: 2684000094643427127, guid: e9fb00eeabf01e25cbf589ac8fc4d42d, type: 3}
+  - {fileID: 2684000094643427127, guid: bd0b0e877cf0e6fa8ad88066630c8731, type: 3}
+  speed: 15
+  text: {fileID: 0}
+  lost: 0
