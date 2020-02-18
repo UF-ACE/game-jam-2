@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class InputController : MonoBehaviour {
   public float reboundSpeed;
   public float terrainSpeed;
 
   bool grounded = false;
+  bool dead = false;
 
   bool WalkSanity() {
     if(GetComponent<Rigidbody2D>().gravityScale > 0) {
@@ -17,7 +19,7 @@ public class InputController : MonoBehaviour {
   }
 
   void Update() {
-    if(Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 2.6f * 0.8f).collider != null) {
+    if(Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 0.6f).collider != null) {
       transform.Translate(Vector2.left * terrainSpeed * Time.deltaTime);
     }
 
@@ -27,23 +29,33 @@ public class InputController : MonoBehaviour {
     }
     GetComponent<Animator>().SetBool("isWalking", grounded && WalkSanity());
     
-    if(transform.position.x < -0.001f) {
+    if(grounded && transform.position.x < -0.001f) {
       float amountToMove = reboundSpeed * Time.deltaTime;
 
       if(Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 5.12f * 0.8f).collider == null) {
         transform.Translate(amountToMove, 0, 0);
-        Debug.Log("test");
       }
     }
   }
 
   void OnCollisionStay2D(Collision2D c) {
-    if(Physics2D.Raycast(GetComponent<Transform>().position, Vector2.down, 2.58f * 0.8f).collider != null) {
+    if(Physics2D.Raycast(GetComponent<Transform>().position, Vector2.down * Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale), 2.58f * 0.8f).collider != null) {
       grounded = true;
     }
   }
 
   void OnCollisionExit2D(Collision2D c) {
     grounded = false;
+  }
+
+  void OnCollsionEnter2D(Collision2D c) {
+    Tilemap t = c.gameObject.GetComponent<Tilemap>();
+    if(t != null) {
+      Vector3Int v = t.WorldToCell(c.GetContact(0).point);
+      Sprite s = t.GetSprite(v);
+      if(s.name.StartsWith("die")) {
+        dead = true;
+      }
+    }
   }
 }
