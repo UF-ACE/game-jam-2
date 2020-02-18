@@ -45,9 +45,9 @@ public class InputController : MonoBehaviour {
 
     Collider2D gravityCollider = Physics2D.Raycast(GetComponent<Transform>().position, Vector2.down * Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale), 0.1f).collider;
     if(gravityCollider != null && gravityCollider.gameObject.layer == LayerMask.NameToLayer("GravityDown")) {
-      GetComponent<Rigidbody2D>().gravityScale = Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale) * gravity - 3.0f;
-    } else if(gravityCollider != null && gravityCollider.gameObject.layer == LayerMask.NameToLayer("GravityUp")) {
       GetComponent<Rigidbody2D>().gravityScale = Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale) * gravity + 3.0f;
+    } else if(gravityCollider != null && gravityCollider.gameObject.layer == LayerMask.NameToLayer("GravityUp")) {
+      GetComponent<Rigidbody2D>().gravityScale = Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale) * gravity - 3.0f;
     } else {
       GetComponent<Rigidbody2D>().gravityScale = Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale) * gravity;
     }
@@ -57,7 +57,8 @@ public class InputController : MonoBehaviour {
     if(dead) {
       return;
     }
-    Collider2D wall = Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 1.0f, LayerMask.NameToLayer("Ground")).collider;
+
+    Collider2D wall = Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 1.0f, LayerMask.GetMask("Ground")).collider;
     if(wall != null) {
       transform.parent = wall.transform;
     } else {
