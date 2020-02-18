@@ -56,13 +56,16 @@ public class InputController : MonoBehaviour {
     grounded = false;
   }
 
-  void OnCollsionEnter2D(Collision2D c) {
+  void OnCollisionEnter2D(Collision2D c) {
     Tilemap t = c.gameObject.GetComponent<Tilemap>();
     if(t != null) {
-      Vector3Int v = t.WorldToCell(c.GetContact(0).point);
-      Sprite s = t.GetSprite(v);
-      if(s.name.StartsWith("die")) {
-        dead = true;
+      for(int i = 0; i < c.contactCount; i++) {
+        Vector3 pos = (new Vector3(c.GetContact(i).point.x, c.GetContact(i).point.y, 0) - transform.position) * 1.1f + transform.position;
+        Vector3Int v = t.WorldToCell(pos);
+        Sprite s = t.GetSprite(v);
+        if(s != null && s.name.StartsWith("die")) {
+          dead = true;
+        }
       }
     }
   }
