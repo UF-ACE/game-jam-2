@@ -8,6 +8,7 @@ public class InputController : MonoBehaviour {
 
   bool grounded = false;
   bool dead = false;
+  float gravity;
 
   bool WalkSanity() {
     if(GetComponent<Rigidbody2D>().gravityScale > 0) {
@@ -17,7 +18,17 @@ public class InputController : MonoBehaviour {
     }
   }
 
+  void Start() {
+    gravity = GetComponent<Rigidbody2D>().gravityScale;
+  }
+
   void Update() {
+    if(dead) {
+      GetComponent<Rigidbody2D>().gravityScale = 0;
+      GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+      return;
+    }
+
     if(Input.GetKeyDown(KeyCode.Space)) {
       GetComponent<Rigidbody2D>().gravityScale *= -1;
       GetComponent<SpriteRenderer>().flipY = !GetComponent<SpriteRenderer>().flipY;
@@ -32,13 +43,21 @@ public class InputController : MonoBehaviour {
       }
     }
 
-    if(dead) {
-      Debug.Log("YOU ARE DEAD");
+    Collider2D gravityCollider = Physics2D.Raycast(GetComponent<Transform>().position, Vector2.down * Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale), 0.1f).collider;
+    if(gravityCollider != null && gravityCollider.gameObject.layer == LayerMask.NameToLayer("GravityDown")) {
+      GetComponent<Rigidbody2D>().gravityScale = Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale) * gravity - 3.0f;
+    } else if(gravityCollider != null && gravityCollider.gameObject.layer == LayerMask.NameToLayer("GravityUp")) {
+      GetComponent<Rigidbody2D>().gravityScale = Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale) * gravity + 3.0f;
+    } else {
+      GetComponent<Rigidbody2D>().gravityScale = Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale) * gravity;
     }
   }
 
   void LateUpdate() {
-    Collider2D wall = Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 1.0f).collider;
+    if(dead) {
+      return;
+    }
+    Collider2D wall = Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 1.0f, LayerMask.NameToLayer("Ground")).collider;
     if(wall != null) {
       transform.parent = wall.transform;
     } else {
@@ -47,6 +66,9 @@ public class InputController : MonoBehaviour {
   }
 
   void OnCollisionStay2D(Collision2D c) {
+    if(dead) {
+      GetComponent<Rigidbody2D>().AddForce(c.transform.position - transform.position, ForceMode2D.Impulse);
+    }
     if(Physics2D.Raycast(GetComponent<Transform>().position, Vector2.down * Mathf.Sign(GetComponent<Rigidbody2D>().gravityScale), 2.58f * 0.8f).collider != null) {
       grounded = true;
     }
@@ -57,15 +79,9 @@ public class InputController : MonoBehaviour {
   }
 
   void OnCollisionEnter2D(Collision2D c) {
-    Tilemap t = c.gameObject.GetComponent<Tilemap>();
-    if(t != null) {
-      for(int i = 0; i < c.contactCount; i++) {
-        Vector3 pos = (new Vector3(c.GetContact(i).point.x, c.GetContact(i).point.y, 0) - transform.position) * 1.1f + transform.position;
-        Vector3Int v = t.WorldToCell(pos);
-        Sprite s = t.GetSprite(v);
-        if(s != null && s.name.StartsWith("die")) {
-          dead = true;
-        }
+    for(int i = 0; i < c.contactCount; i++) {
+      if(c.GetContact(i).collider.gameObject.layer == LayerMask.NameToLayer("Spikes")) {
+        dead = true;
       }
     }
   }
