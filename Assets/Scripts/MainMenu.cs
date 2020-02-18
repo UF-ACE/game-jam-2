@@ -11,6 +11,6 @@ public class MainMenu : MonoBehaviour
     }
 
     public void OnPressStart() {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("MainScene");
     }
 }
