@@ -38,7 +38,7 @@ public class InputController : MonoBehaviour {
   }
 
   void OnCollisionStay2D(Collision2D c) {
-    if(Physics2D.Raycast(GetComponent<Transform>().position, Vector2.down, 2.57f * 0.8f).collider != null) {
+    if(Physics2D.Raycast(GetComponent<Transform>().position, Vector2.down, 2.58f * 0.8f).collider != null) {
       grounded = true;
     }
   }
