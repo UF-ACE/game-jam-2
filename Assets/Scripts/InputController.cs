@@ -5,7 +5,6 @@ using UnityEngine.Tilemaps;
 
 public class InputController : MonoBehaviour {
   public float reboundSpeed;
-  public float terrainSpeed;
 
   bool grounded = false;
   bool dead = false;
@@ -19,10 +18,6 @@ public class InputController : MonoBehaviour {
   }
 
   void Update() {
-    if(Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 0.6f).collider != null) {
-      transform.Translate(Vector2.left * terrainSpeed * Time.deltaTime);
-    }
-
     if(Input.GetKeyDown(KeyCode.Space)) {
       GetComponent<Rigidbody2D>().gravityScale *= -1;
       GetComponent<SpriteRenderer>().flipY = !GetComponent<SpriteRenderer>().flipY;
@@ -35,6 +30,19 @@ public class InputController : MonoBehaviour {
       if(Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 5.12f * 0.8f).collider == null) {
         transform.Translate(amountToMove, 0, 0);
       }
+    }
+
+    if(dead) {
+      Debug.Log("YOU ARE DEAD");
+    }
+  }
+
+  void LateUpdate() {
+    Collider2D wall = Physics2D.BoxCast(GetComponent<Transform>().position, new Vector2(5.12f * 0.8f, 5.12f * 0.8f), 0.0f, Vector2.right, 1.0f).collider;
+    if(wall != null) {
+      transform.parent = wall.transform;
+    } else {
+      transform.parent = null;
     }
   }
 
